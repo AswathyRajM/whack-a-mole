@@ -1,129 +1,59 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const resultDisplay = document.querySelector('#result');
-    resultDisplay.textContent = '0';
-    //card options
-    const cardArray = [{
-            name: 'cat1',
-            img: 'images/cat1.jpg'
-        },
-        {
-            name: 'cat1',
-            img: 'images/cat1.jpg'
-        },
-        {
-            name: 'cat2',
-            img: 'images/cat2.jpg'
-        },
-        {
-            name: 'cat2',
-            img: 'images/cat2.jpg'
-        },
-        {
-            name: 'cat3',
-            img: 'images/cat3.jpg'
-        },
-        {
-            name: 'cat3',
-            img: 'images/cat3.jpg'
-        },
-        {
-            name: 'cat4',
-            img: 'images/cat4.jpg'
-        },
-        {
-            name: 'cat4',
-            img: 'images/cat4.jpg'
-        },
-        {
-            name: 'cat5',
-            img: 'images/cat5.jpg'
-        },
-        {
-            name: 'cat5',
-            img: 'images/cat5.jpg'
-        },
-        {
-            name: 'cat6',
-            img: 'images/cat6.jpg'
-        },
-        {
-            name: 'cat6',
-            img: 'images/cat6.jpg'
-        }
 
-    ];
-    const grid = document.querySelector('.grid');
-    cardArray.sort(() => 0.5 - Math.random());
-    //create board
-    function createBoard() {
-        for (let i = 0; i < cardArray.length; i++) {
-            var card = document.createElement('img');
-            card.setAttribute('src', 'images/abstract.jpg');
-            card.setAttribute('data-id', i);
-            card.addEventListener('click', flipcard);
-            grid.appendChild(card);
-        }
+const square = document.querySelectorAll('.square');
+const mole = document.querySelectorAll('.mole');
+var timeLeft = document.querySelector('#time-left');
+var score = document.querySelector('#score');
+score.textContent = 0;
+var result = 0;
 
+var currentTime = timeLeft.textContent;
+currentTime = 60;
+
+function restart(){
+    let c = confirm(" Play Again?");
+    if(c){
+        currentTime = 60;
+        result = 0 ;
+        score.textContent = result;
     }
 
-    //flip card
-    var cardChosen = [];
-    var cardChosenId = [];
-    var cardsWon = [];
-
-    function flipcard() {
-        var cardSrc = this.getAttribute('src');
-        //to not reflip the card
-        if (cardSrc === 'images/white.png') {
-            return
-        }
-
-        var cardId = this.getAttribute('data-id');
-        cardChosen.push(cardArray[cardId].name);
-        cardChosenId.push(cardId);
-        this.setAttribute('src', cardArray[cardId].img);
-        if (cardChosen.length === 2) {
-            if (!(cardChosenId[0] === cardChosenId[1])) {
-                setTimeout(checkForMatch, 500);
-            } else {
-                // for not to select the same image twice
-                let cards = document.querySelectorAll('img');
-                let chosenCard = cardChosenId[0];
-                cards[chosenCard].setAttribute('src', 'images/abstract.jpg');
-                cardChosen = [];
-                cardChosenId = [];
-            }
-        }
+}
+function randomSquare() {
+    square.forEach(className => {
+        className.classList.remove('mole');
+    })
+    let randomPosition = square[Math.floor(Math.random() * 9)];
+    randomPosition.classList.add('mole');
+    hitPosition = randomPosition.id;
+    if(currentTime===-1)
+    {
+        square.forEach(className => {
+        className.classList.remove('mole');
+        })
+        
     }
-
-    //check for matches
-
-    function checkForMatch() {
-        var cards = document.querySelectorAll('img');
-        const chosenCardOne = cardChosenId[0];
-        const chosenCardTwo = cardChosenId[1];
-
-        if (cardChosen[0] == cardChosen[1]) {
-            alert(' You found a match!');
-            cards[chosenCardOne].setAttribute('src', 'images/white.png');
-            cards[chosenCardTwo].setAttribute('src', 'images/white.png');
-            cardsWon.push(cardChosen);
-        } else {
-            cards[chosenCardOne].setAttribute('src', 'images/abstract.jpg');
-            cards[chosenCardTwo].setAttribute('src', 'images/abstract.jpg');
-            alert('Sorry. Try again!');
+}
+square.forEach(id => {
+    return (id.addEventListener('mouseup', () => {
+        if (id.id === hitPosition) {
+            result += 1;
+            score.textContent = result;
         }
-        resultDisplay.textContent = cardsWon.length;
-        if (cardsWon.length === cardArray.length / 2) {
-            resultDisplay.textContent = "Congratualtions! You found them all!";
-        }
-
-        //reset the array
-        cardChosen = [];
-        cardChosenId = [];
-    }
-
-    createBoard();
-
-
+    }));
 })
+
+function moveMole() {
+    let timerId = null;
+    timerId = setInterval(randomSquare, 1100);
+}
+moveMole();
+
+function countDown(){
+    timeLeft.textContent = currentTime;
+    currentTime --;
+    if (currentTime === -1){
+        clearInterval(timerId);
+        alert('GAME OVER!! YOUR FINAL SCORE IS '+ result);
+    }
+}
+let timerId = setInterval(countDown, 1000);
