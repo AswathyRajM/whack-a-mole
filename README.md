@@ -1,6 +1,2 @@
-# js
-
-Some sample projects just for some fun.
-A few js basic games. It doesnt use much of css or html. Just concentrating on js. 
-
+# JavaScript based classic Whack-a-Mole game
 
